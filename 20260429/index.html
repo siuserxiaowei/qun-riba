@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>群日报 · 2026-04-29</title>
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --card: #FFFFFF;
+    --bubble: #F2F2F2;
+    --text: #1A1A1A;
+    --muted: #888888;
+    --line: #E8E8E8;
+    --accent: #07C160;
+    --accent-soft: #E6F7EE;
+    --warn: #FA5151;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    scroll-behavior: smooth;
+  }
+
+  /* === 顶部 Hero === */
+  .hero {
+    text-align: center;
+    padding: 40px 16px 24px;
+    background: linear-gradient(180deg, #FFF8E0 0%, #FFFFFF 100%);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .dragon { font-size: 56px; line-height: 1; }
+  .hero h1 {
+    margin: 10px 0 6px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .hero .date {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .hero .stats {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .hero .stats span {
+    margin: 0 8px;
+    color: var(--accent);
+    font-weight: 700;
+    font-feature-settings: "tnum";
+  }
+
+  /* === 顶部导航 (sticky) === */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .nav a {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-right: 6px;
+    background: var(--bubble);
+    color: var(--text);
+    border-radius: 999px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .nav a:hover, .nav a.active {
+    background: var(--accent);
+    color: #FFF;
+  }
+  .nav a.skipped { opacity: 0.4; }
+
+  /* === 主内容 === */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+  }
+
+  /* === 群分隔卡 === */
+  .group {
+    margin: 32px 0;
+    padding: 24px 20px;
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+  .group-head {
+    text-align: center;
+    padding-bottom: 18px;
+    border-bottom: 2px dashed var(--line);
+    margin-bottom: 18px;
+  }
+  .group-head .name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .group-head .meta {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .group-head .meta span {
+    margin: 0 4px;
+    font-feature-settings: "tnum";
+  }
+
+  /* === 段标题 === */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 18px 0 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .section-title .emoji { font-size: 18px; }
+  .section-title .sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 6px;
+  }
+
+  /* === 快捷事件 === */
+  .quotes {
+    background: var(--bubble);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .quotes .row {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .quotes .row:last-child { border-bottom: none; }
+  .quotes .who {
+    flex: 0 0 auto;
+    min-width: 80px;
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .quotes .quote { flex: 1; font-size: 13px; }
+
+  /* === 龙王榜 === */
+  .ranking { display: flex; gap: 8px; margin-bottom: 14px; }
+  .ranking .seat {
+    flex: 1;
+    text-align: center;
+    padding: 14px 8px 10px;
+    background: var(--bubble);
+    border-radius: 12px;
+  }
+  .seat.gold   { background: linear-gradient(180deg,#FFFAEC,#FAFAFA); }
+  .seat.silver { background: linear-gradient(180deg,#F4F4F8,#FAFAFA); }
+  .seat.bronze { background: linear-gradient(180deg,#FBF1E6,#FAFAFA); }
+  .seat .medal { font-size: 28px; line-height: 1; }
+  .seat .name {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .seat .cnt {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--muted);
+    font-feature-settings: "tnum";
+  }
+  .seat .common {
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.4;
+    word-break: break-all;
+  }
+
+  /* === 资源 === */
+  .resources .res {
+    background: var(--bubble);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .res .meta { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .res .title { font-size: 13px; font-weight: 600; line-height: 1.4; }
+  .res .desc { font-size: 12px; color: #555; margin-top: 4px; line-height: 1.5; }
+  .res .points { margin: 6px 0 0; padding-left: 18px; font-size: 11px; color: #666; }
+  .res .points li { margin: 2px 0; }
+  .res .url { margin-top: 6px; font-size: 11px; color: var(--accent); word-break: break-all; }
+
+  /* === 故事章节 === */
+  .story {
+    background: var(--bubble);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .story-head {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(0,0,0,0.08);
+  }
+  .story-head .emoji { font-size: 18px; }
+  .story-head .title { font-size: 15px; font-weight: 700; }
+  .story-head .meta { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .bubble {
+    margin: 7px 0;
+  }
+  .bubble .who {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .bubble .who .time { margin-left: 6px; color: #BBB; font-feature-settings: "tnum"; }
+  .bubble .body {
+    background: #FFF;
+    border-radius: 4px 14px 14px 14px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+  .commentary {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #1F5F3D;
+    line-height: 1.6;
+    border-left: 3px solid var(--accent);
+  }
+  .commentary::before {
+    content: "✏️ 毒舌点评 ";
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  /* === 复读 === */
+  .echo {
+    text-align: center;
+    background: var(--bubble);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .echo .quote {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent);
+  }
+  .echo .voicers { font-size: 11px; color: var(--muted); }
+
+  /* === 词云 === */
+  .cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    margin-bottom: 14px;
+  }
+  .cloud .chip {
+    padding: 3px 9px;
+    background: var(--bubble);
+    border-radius: 999px;
+    font-size: 11px;
+    color: #555;
+  }
+  .cloud .chip.hot { background: #FFE4E6; color: var(--warn); font-weight: 700; }
+
+  /* === 颁奖 === */
+  .awards .row {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--bubble);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .awards .label {
+    flex: 0 0 80px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .awards .winner {
+    flex: 0 0 auto;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+    margin-right: 10px;
+    word-break: break-all;
+  }
+  .awards .reason {
+    flex: 1;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* === 群被跳过 (薄数据) === */
+  .group.skipped {
+    opacity: 0.55;
+  }
+  .group.skipped .group-head .name::after {
+    content: " · 今天比较安静";
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .skip-msg {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 10px;
+    line-height: 1.7;
+  }
+
+  /* === 底部 === */
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+    line-height: 1.7;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* === Tablet/Desktop === */
+  @media (min-width: 720px) {
+    .container { padding: 0 24px 80px; }
+    .group { padding: 30px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="dragon">🐉</div>
+  <h1>群日报</h1>
+  <div class="date">2026-04-29 · 周三</div>
+  <div class="stats">
+    覆盖 <span>12</span> 个群 ·
+    总消息 <span>1316</span> 条 ·
+    活跃用户 <span>127</span> 人
+  </div>
+</div>
+
+<div class="nav">
+  <a href="#g-1-易起搞钱-vip-陈随易" class="">1#易起搞钱（VIP）｜ 陈随易 · 1154</a>
+  <a href="#g-harness精神病院-大群" class="skipped">Harness精神病院(大群)</a>
+  <a href="#g-一群神的孩子们" class="skipped">一群神的孩子们</a>
+  <a href="#g-闲聊-海边晒太阳" class="skipped">『闲聊』海边晒太阳☀️</a>
+  <a href="#g-dontbesilent-聊赚钱的群1" class="skipped">dontbesilent 聊赚钱的群①</a>
+  <a href="#g-dontbesilent-聊赚钱的群2" class="skipped">dontbesilent 聊赚钱的群②</a>
+  <a href="#g-dontbesilent-聊赚钱的群3" class="skipped">dontbesilent 聊赚钱的群③</a>
+  <a href="#g-dontbesilent-聊赚钱的群4" class="skipped">dontbesilent 聊赚钱的群④</a>
+  <a href="#g-赫兹的朋友们-出海交流" class="skipped">赫兹的朋友们~出海交流</a>
+  <a href="#g-showmeai-踏浪而歌" class="skipped">🌊 ShowMeAI 踏浪而歌</a>
+  <a href="#g-哥飞的朋友们7" class="">哥飞的朋友们⑦ · 64</a>
+  <a href="#g-哥飞的朋友们11" class="">哥飞的朋友们⑪ · 98</a>
+</div>
+
+<div class="container">
+
+  <div class="group " id="g-1-易起搞钱-vip-陈随易">
+    <div class="group-head">
+      <div class="name">1#易起搞钱（VIP）｜ 陈随易</div>
+      <div class="meta">
+          <span>1154 条消息</span> ·
+          <span>83 人</span> ·
+          <span>00:00 至 23:46</span>
+      </div>
+    </div>
+
+
+      <div class="section-title"><span class="emoji">🔥</span><span>快捷事件</span><span class="sub">今天群里说了啥</span></div>
+      <div class="quotes">
+        <div class="row">
+          <div class="who">Froyd.</div>
+          <div class="quote">8k干80k的活，这公司都是啥牛马公司</div>
+        </div>
+        <div class="row">
+          <div class="who">郑伟彬 Robin（IT+AIGC）</div>
+          <div class="quote">床上赚了300，起床了</div>
+        </div>
+        <div class="row">
+          <div class="who">eric chan</div>
+          <div class="quote">我把价格打下来了，成本1分</div>
+        </div>
+        <div class="row">
+          <div class="who">luckychang</div>
+          <div class="quote">AI写的代码已经稳定超过99%程序员</div>
+        </div>
+        <div class="row">
+          <div class="who">李峰</div>
+          <div class="quote">没付钱的不是客户，付钱才算</div>
+        </div>
+        <div class="row">
+          <div class="who">李峰</div>
+          <div class="quote">我背后还有496个精神股东</div>
+        </div>
+        <div class="row">
+          <div class="who">大雄</div>
+          <div class="quote">vibe了一个小型进销存，卖了2万每年4000</div>
+        </div>
+        <div class="row">
+          <div class="who">前端之虎陈随易</div>
+          <div class="quote">做事情最简单直接的办法就是坚持不断更</div>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🏆</span><span>龙王榜</span><span class="sub">话痨 TOP 3</span></div>
+      <div class="ranking">
+        <div class="seat gold">
+          <div class="medal">🥇</div>
+          <div class="name">郑伟彬 Robin（IT+AIGC）</div>
+          <div class="cnt">170 条</div>
+<div class="common">资源 / 赚钱 / 继续 / 起床</div>        </div>
+        <div class="seat silver">
+          <div class="medal">🥈</div>
+          <div class="name">李峰</div>
+          <div class="cnt">168 条</div>
+<div class="common">挣钱 / kimi / 一样 / 工作</div>        </div>
+        <div class="seat bronze">
+          <div class="medal">🥉</div>
+          <div class="name">eric chan</div>
+          <div class="cnt">89 条</div>
+<div class="common">老板 / 大佬 / 价格 / 设计师</div>        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🔗</span><span>资源分享</span></div>
+      <div class="resources">
+        <div class="res">
+          <div class="meta">今年额外收入破10w · 16:55 · <em>工具</em></div>
+          <div class="title">TapCanvas 电商画布</div>
+<div class="desc">开源版的电商画布工具，付费版给完整功能</div><div class="url">https://github.com/anymouschina/TapCanvas</div>          <ul class="points">
+<li>先做开源再有人找上门</li><li>网站营收 50 元，开源带来 3w 收益</li><li>下一步把电商画布封装成 skill 给小龙虾调</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">AI 应用定制-李守聪（闲鱼版） · 13:05 · <em>推荐</em></div>
+          <div class="title">Wiwana 全球AI赚钱社区</div>
+<div class="desc">用百度秒哒生成的整站，可绑定自有域名</div><div class="url">https://app-b9lul4c2m77l.appmiaoda.com/</div>          <ul class="points">
+<li>秒哒生成体感比 Claude Code 4.7 强几个数量级</li><li>支持绑定自己的域名</li><li>discovery 页面可看全部样例</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">高山流水 · 17:42 · <em>避坑</em></div>
+          <div class="title">GitHub Copilot 6月新计费表</div>
+<div class="desc">微软6月1日起年套餐用户的功能倍率全面提高</div><div class="url">https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing</div>          <ul class="points">
+<li>Claude Opus 4.6 倍率涨 9 倍</li><li>整体相当于涨价 6 倍</li><li>微软和 OpenAI 分手后性价比快速下滑</li>          </ul>
+        </div>
+      </div>
+
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💰</span>
+          <span class="title">床上接单的男人：Robin的爆单日记</span>
+<span class="meta">09:25 - 21:35</span>        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">09:25</span></div>
+          <div class="body">开始赚钱咯，来了个gpt代充150</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">10:46</span></div>
+          <div class="body">床上赚了300，起床了，干活了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">11:26</span></div>
+          <div class="body">还在床上，继续出单</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">11:47</span></div>
+          <div class="body">出门吃饭了，真不让我起床的节奏</div>
+        </div>
+        <div class="bubble">
+          <div class="who">李峰<span class="time">15:27</span></div>
+          <div class="body">你一直在外面玩的，不算（指Robin）</div>
+        </div>
+        <div class="bubble">
+          <div class="who">大雄<span class="time">15:34</span></div>
+          <div class="body">你挣钱就跟玩一样</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">15:55</span></div>
+          <div class="body">40w，我到现在都没赚到40w，小钱</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">21:35</span></div>
+          <div class="body">嗨到现在，刚回到民宿，继续干活</div>
+        </div>
+<div class="commentary">Robin把「躺赚」活成了人生哲学：醒着出单、吃饭出单、回民宿继续出单——除了不在床上之外，全场都在出单。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🐮</span>
+          <span class="title">凌晨1点：你被AI辞退了</span>
+<span class="meta">01:23 - 09:07</span>        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">01:23</span></div>
+          <div class="body">离谱</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Froyd.<span class="time">01:26</span></div>
+          <div class="body">8k干80k的活，这公司都是啥牛马公司</div>
+        </div>
+        <div class="bubble">
+          <div class="who">luckychang<span class="time">09:03</span></div>
+          <div class="body">经过近5年试点和复盘，我们不得不承认一个事实：AI写的代码已经稳定地超过公司99%程序员</div>
+        </div>
+        <div class="bubble">
+          <div class="who">luckychang<span class="time">09:03</span></div>
+          <div class="body">AI执行任务无需沟通成本、不存在情绪波动、7×24小时稳定输出、AI不会离职</div>
+        </div>
+        <div class="bubble">
+          <div class="who">luckychang<span class="time">09:03</span></div>
+          <div class="body">为响应公司「人类程序员逐步退出一线」的长期战略，经CEO办公室与AI伦理委员会讨论决定…</div>
+        </div>
+        <div class="bubble">
+          <div class="who">统统统<span class="time">09:04</span></div>
+          <div class="body">真上头</div>
+        </div>
+<div class="commentary">凌晨刚有 Froyd 吐槽 8k 干 80k 的活，早上 luckychang 就贴出了 AI 伦理委员会的辞退通告——程序员从打工人卷到打工 AI 的备胎，只用了一个早班的距离。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🏠</span>
+          <span class="title">在北京活着要花多少钱：房贷算不算生活成本</span>
+<span class="meta">07:44 - 09:25</span>        </div>
+        <div class="bubble">
+          <div class="who">胡林霄<span class="time">07:44</span></div>
+          <div class="body">你们每个月生活各方面开支最低得多少钱呢</div>
+        </div>
+        <div class="bubble">
+          <div class="who">互联网人<span class="time">08:21</span></div>
+          <div class="body">1500-2000，住家里，不用交房租。房子出租，不用交房贷</div>
+        </div>
+        <div class="bubble">
+          <div class="who">立东<span class="time">08:21</span></div>
+          <div class="body">一日三餐，一天50算，就是1500咯</div>
+        </div>
+        <div class="bubble">
+          <div class="who">LeoTang<span class="time">08:31</span></div>
+          <div class="body">我房贷一个月就要6k了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">许江涛<span class="time">08:32</span></div>
+          <div class="body">房贷不能算到生活成本里</div>
+        </div>
+        <div class="bubble">
+          <div class="who">不正经的90后程序猿<span class="time">08:37</span></div>
+          <div class="body">为啥不能?</div>
+        </div>
+        <div class="bubble">
+          <div class="who">李峰<span class="time">09:13</span></div>
+          <div class="body">我东北人，北漂，2个人失业，最低标准</div>
+        </div>
+        <div class="bubble">
+          <div class="who">李峰<span class="time">09:18</span></div>
+          <div class="body">在北京没车牌，租的，一个月1000块又没了</div>
+        </div>
+<div class="commentary">本群最大的贫富分化不在收入，而在「你算不算房贷」——能把房贷当生活成本之外的，才是真·有钱人。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💸</span>
+          <span class="title">1分成本的生图战争：中转站抢单实录</span>
+<span class="meta">09:45 - 10:21</span>        </div>
+        <div class="bubble">
+          <div class="who">🎯周学学<span class="time">09:45</span></div>
+          <div class="body">要GPT image2的API接口啊，满血版的，价格越实惠越好</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑伟彬 Robin（IT+AIGC）<span class="time">09:46</span></div>
+          <div class="body">我，可以测试</div>
+        </div>
+        <div class="bubble">
+          <div class="who">eric chan<span class="time">09:46</span></div>
+          <div class="body">找我呀，只用生图，先送余额</div>
+        </div>
+        <div class="bubble">
+          <div class="who">eric chan<span class="time">09:55</span></div>
+          <div class="body">我把价格打下来了，成本1分。。。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">WangYJ<span class="time">10:13</span></div>
+          <div class="body">一个卡密不赚100+吗</div>
+        </div>
+        <div class="bubble">
+          <div class="who">大雄<span class="time">10:13</span></div>
+          <div class="body">我80卖便宜了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">eric chan<span class="time">10:14</span></div>
+          <div class="body">我卖50亏大了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">阿俊<span class="time">10:15</span></div>
+          <div class="body">大家可能没有打探过行情价</div>
+        </div>
+<div class="commentary">周学学一句话甩进群，Robin说我能做，eric直接送，最后eric一个50让全群感觉自己活在不同次元——卷王内战的特点是没有赢家，只有更便宜的下一家。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🛒</span>
+          <span class="title">凡尔赛大赛：vibe一下卖2万</span>
+<span class="meta">10:51 - 16:55</span>        </div>
+        <div class="bubble">
+          <div class="who">大雄<span class="time">10:51</span></div>
+          <div class="body">vibe了一个小型进销存 卖了2万 每年4000</div>
+        </div>
+        <div class="bubble">
+          <div class="who">大雄<span class="time">10:52</span></div>
+          <div class="body">纯vibe，uniapp</div>
+        </div>
+        <div class="bubble">
+          <div class="who">杨东波<span class="time">16:31</span></div>
+          <div class="body">同志们，做出来只是第一步。1.怎么卖出去 2.怎么运营 3.怎么迭代，这些才是大头</div>
+        </div>
+        <div class="bubble">
+          <div class="who">今年额外收入破10w<span class="time">16:51</span></div>
+          <div class="body">目前网站营收 50，但开源带来的收益有3w了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">今年额外收入破10w<span class="time">16:53</span></div>
+          <div class="body">我是先做的开源，然后才有人找我，2周做完，一直在迭代</div>
+        </div>
+        <div class="bubble">
+          <div class="who">李峰<span class="time">16:48</span></div>
+          <div class="body">是我太菜了，我又菜又懒</div>
+        </div>
+        <div class="bubble">
+          <div class="who">杨东波<span class="time">16:48</span></div>
+          <div class="body">你不是菜，你只是不想动手而已</div>
+        </div>
+<div class="commentary">群友的凡尔赛是有水准的：大雄轻飘飘扔出「vibe了个进销存卖2万」，beq补一句「开源带来3w」，李总只能在旁边躺平喊我又菜又懒——杨东波再补一刀，不动手哪来的菜。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💳</span>
+          <span class="title">微软的6月1日大刀：Copilot年套餐涨9倍</span>
+<span class="meta">17:36 - 17:53</span>        </div>
+        <div class="bubble">
+          <div class="who">高山流水<span class="time">17:36</span></div>
+          <div class="body">6月1日起，仅年套餐用户的功能倍率将有所提高（详见表格）</div>
+        </div>
+        <div class="bubble">
+          <div class="who">高山流水<span class="time">17:38</span></div>
+          <div class="body">靠，这是针对年套餐进行提价，变相占不了便宜，就怕用户占便宜</div>
+        </div>
+        <div class="bubble">
+          <div class="who">高山流水<span class="time">17:42</span></div>
+          <div class="body">微软和openai分手后，ai服务越来越没性价比了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">高山流水<span class="time">17:43</span></div>
+          <div class="body">我买的是年订阅pro，不打算续了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">李峰<span class="time">17:53</span></div>
+          <div class="body">按这个新倍数调整后，相当于涨价6倍了，Claude Opus 4.6涨了9倍</div>
+        </div>
+        <div class="bubble">
+          <div class="who">前端之虎陈随易<span class="time">17:53</span></div>
+          <div class="body">copilot用不起就不用了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">不正经的90后程序猿<span class="time">17:51</span></div>
+          <div class="body">现在全部基本都按照积分或者token使用计费了</div>
+        </div>
+<div class="commentary">微软的算盘打得比AI推理还快——分手OpenAI后，年套餐用户成了第一批被收割的。陈总一句「用不起就不用了」，写出了所有打工程序员的克制。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🤖</span>
+          <span class="title">凌晨炸场：自动开issue自动开pr终于跑通了</span>
+<span class="meta">22:40 - 22:53</span>        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">22:40</span></div>
+          <div class="body">我的自动开 issue 自动开 pr 终于全自动跑通了第一个 case</div>
+        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">22:42</span></div>
+          <div class="body">这绝对是加速。我这项目真的可以不需要看服务器日志了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">22:42</span></div>
+          <div class="body">错误日志全部自动开issue，让ai处理，处理不了的分配给我。我只需要优化这个agent，就是给我自己提效</div>
+        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">22:46</span></div>
+          <div class="body">我还积累了贼多cr规则，再把cr接上就美滋滋了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">弹簧振子👀<span class="time">22:53</span></div>
+          <div class="body">我这个工具比收费工具强的一点就是自带 harness，workspace 是定制过的</div>
+        </div>
+<div class="commentary">终极形态：AI开issue→AI写PR→AI做CR，人类只负责按回车——卷的尽头不是被AI替代，是被自己写的agent替代。</div>      </div>
+
+      <div class="section-title"><span class="emoji">💪</span><span>群体复读</span></div>
+      <div class="echo">
+        <div class="quote">「你挣钱就跟玩一样」</div>
+        <div class="voicers">李峰 · 大雄 · eric chan · 3 人接力</div>
+      </div>
+
+      <div class="section-title"><span class="emoji">☁️</span><span>关键词</span></div>
+      <div class="cloud">
+        <span class="chip hot">这个<small>·37</small></span>
+        <span class="chip hot">一个<small>·24</small></span>
+        <span class="chip hot">就是<small>·23</small></span>
+        <span class="chip hot">可以<small>·22</small></span>
+        <span class="chip hot">自己<small>·20</small></span>
+        <span class="chip hot">AI<small>·19</small></span>
+        <span class="chip ">现在<small>·18</small></span>
+        <span class="chip ">外贸<small>·18</small></span>
+        <span class="chip ">捂脸<small>·17</small></span>
+        <span class="chip ">不是<small>·16</small></span>
+        <span class="chip ">还是<small>·16</small></span>
+        <span class="chip ">旺柴<small>·15</small></span>
+        <span class="chip ">怎么<small>·15</small></span>
+        <span class="chip ">赚钱<small>·15</small></span>
+        <span class="chip ">电商<small>·14</small></span>
+        <span class="chip ">你们<small>·13</small></span>
+        <span class="chip ">没有<small>·13</small></span>
+        <span class="chip ">挣钱<small>·13</small></span>
+        <span class="chip ">一样<small>·12</small></span>
+        <span class="chip ">这么<small>·12</small></span>
+        <span class="chip ">客户<small>·12</small></span>
+        <span class="chip ">ai<small>·12</small></span>
+        <span class="chip ">token<small>·12</small></span>
+        <span class="chip ">知道<small>·12</small></span>
+        <span class="chip ">模型<small>·11</small></span>
+      </div>
+
+      <div class="section-title"><span class="emoji">📊</span><span>今日总结</span></div>
+      <div class="awards">
+        <div class="row">
+          <div class="label">最卷的人</div>
+          <div class="winner">郑伟彬 Robin（IT+AIGC）</div>
+          <div class="reason">床上接单300、出门吃饭还在出单、嗨到回民宿继续干活，全天170条消息把「躺赚」演成纪录片</div>
+        </div>
+        <div class="row">
+          <div class="label">最清醒的人</div>
+          <div class="winner">杨东波</div>
+          <div class="reason">「做出来只是第一步，怎么卖出去/运营/迭代才是大头」——一句戳穿全群vibe coding的小幻想</div>
+        </div>
+        <div class="row">
+          <div class="label">最扎心的人</div>
+          <div class="winner">Froyd.</div>
+          <div class="reason">凌晨1点26分一句「8k干80k的活 这公司都是啥牛马公司」，把所有还在加班的群友按在地上摩擦</div>
+        </div>
+        <div class="row">
+          <div class="label">最佳黑马</div>
+          <div class="winner">今年额外收入破10w</div>
+          <div class="reason">TapCanvas开源画布2周做完，网站只赚50，但开源反向带来3w，今天群里一边贴源码一边接定制单</div>
+        </div>
+        <div class="row">
+          <div class="label">今日金句</div>
+          <div class="winner">李峰</div>
+          <div class="reason">我背后还有496个精神股东</div>
+        </div>
+      </div>
+
+  </div>
+  <div class="group skipped" id="g-harness精神病院-大群">
+    <div class="group-head">
+      <div class="name">Harness精神病院(大群)</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-一群神的孩子们">
+    <div class="group-head">
+      <div class="name">一群神的孩子们</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-闲聊-海边晒太阳">
+    <div class="group-head">
+      <div class="name">『闲聊』海边晒太阳☀️</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-dontbesilent-聊赚钱的群1">
+    <div class="group-head">
+      <div class="name">dontbesilent 聊赚钱的群①</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-dontbesilent-聊赚钱的群2">
+    <div class="group-head">
+      <div class="name">dontbesilent 聊赚钱的群②</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-dontbesilent-聊赚钱的群3">
+    <div class="group-head">
+      <div class="name">dontbesilent 聊赚钱的群③</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-dontbesilent-聊赚钱的群4">
+    <div class="group-head">
+      <div class="name">dontbesilent 聊赚钱的群④</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-赫兹的朋友们-出海交流">
+    <div class="group-head">
+      <div class="name">赫兹的朋友们~出海交流</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group skipped" id="g-showmeai-踏浪而歌">
+    <div class="group-head">
+      <div class="name">🌊 ShowMeAI 踏浪而歌</div>
+      <div class="meta">
+          <span>当天 0 条</span>
+      </div>
+    </div>
+
+      <div class="skip-msg">
+        💤 当天群里只有 0 条消息，少于阈值，跳过日报生成
+      </div>
+  </div>
+  <div class="group " id="g-哥飞的朋友们7">
+    <div class="group-head">
+      <div class="name">哥飞的朋友们⑦</div>
+      <div class="meta">
+          <span>64 条消息</span> ·
+          <span>21 人</span> ·
+          <span>08:16 至 23:44</span>
+      </div>
+    </div>
+
+
+      <div class="section-title"><span class="emoji">🔥</span><span>快捷事件</span><span class="sub">今天群里说了啥</span></div>
+      <div class="quotes">
+        <div class="row">
+          <div class="who">哥飞</div>
+          <div class="quote">每一篇博文脉络结构相同，就算模板。</div>
+        </div>
+        <div class="row">
+          <div class="who">Sinan</div>
+          <div class="quote">copilot 的好日子结束了。</div>
+        </div>
+        <div class="row">
+          <div class="who">Sinan</div>
+          <div class="quote">本来每个月 40 刀相当于 2000 刀的用量。</div>
+        </div>
+        <div class="row">
+          <div class="who">毛海山Sam</div>
+          <div class="quote">GPT 最多只掉会员不封号。</div>
+        </div>
+        <div class="row">
+          <div class="who">CoCo AI 谨俞</div>
+          <div class="quote">image2+seedance2.0 的天下。</div>
+        </div>
+        <div class="row">
+          <div class="who">Erwa</div>
+          <div class="quote">半个小时就能改好上线，这种算模板吗？</div>
+        </div>
+        <div class="row">
+          <div class="who">郝永刚</div>
+          <div class="quote">不会吧，苹果先扣税的。</div>
+        </div>
+        <div class="row">
+          <div class="who">哥飞</div>
+          <div class="quote">用 ShipAny 用的是骨架，皮可以任意修改。</div>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🏆</span><span>龙王榜</span><span class="sub">话痨 TOP 3</span></div>
+      <div class="ranking">
+        <div class="seat gold">
+          <div class="medal">🥇</div>
+          <div class="name">哥飞</div>
+          <div class="cnt">11 条</div>
+<div class="common">大家 / 直播 / 核心 / 模板</div>        </div>
+        <div class="seat silver">
+          <div class="medal">🥈</div>
+          <div class="name">Sinan</div>
+          <div class="cnt">10 条</div>
+<div class="common">用量 / 够用 / copilot / PayPal</div>        </div>
+        <div class="seat bronze">
+          <div class="medal">🥉</div>
+          <div class="name">刘辉</div>
+          <div class="cnt">6 条</div>
+<div class="common">Youtube / 感谢 / 问题 / 请教</div>        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🔗</span><span>资源分享</span></div>
+      <div class="resources">
+        <div class="res">
+          <div class="meta">哥飞 · 08:17 · <em>回放</em></div>
+          <div class="title">丁律师 × 彪哥 × 树哥 × 哥飞 直播连麦回放</div>
+<div class="desc">回答大家最好奇的那些出海创业问题，Penny 听完说补了心力。</div>          <ul class="points">
+<li>飞哥踩过的坑</li><li>出海创业 Q&amp;A</li><li>心力补给</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">老荀 · 17:30 · <em>工具</em></div>
+          <div class="title">AITDK</div>
+<div class="desc">在谷歌搜索结果每个条目下直接看到流量数据的浏览器插件。</div>          <ul class="points">
+<li>谷歌 SERP 流量速查</li><li>几个大写字母名字</li><li>CC 找了半天的就是它</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">哥飞 · 12:47 · <em>推荐</em></div>
+          <div class="title">GPT Image 2</div>
+<div class="desc">生图能力真的很强，群友补充：image2+seedance2.0 的天下。</div>          <ul class="points">
+<li>生图能力升级</li><li>找使用场景</li><li>搭配 seedance 2.0</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">哥飞 · 23:22 · <em>解读</em></div>
+          <div class="title">Claude × 哥飞：3 月底 4 月初谷歌核心算法更新解读</div>
+<div class="desc">重点划在「scaled content abuse」上——只换关键词不换结构等于规模化内容滥用。</div>          <ul class="points">
+<li>不再区分人写还是 AI 写</li><li>结构雷同 + 关键词替换 = 滥用</li><li>骨架 ≠ 模板</li>          </ul>
+        </div>
+      </div>
+
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">📺</span>
+          <span class="title">飞哥连麦回放上岗</span>
+<span class="meta">08:17 - 11:00</span>        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">08:17</span></div>
+          <div class="body">前几天丁律师邀请到彪哥、树哥和我直播聊聊天，回放出来了，感兴趣可以听一听。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Penny<span class="time">09:02</span></div>
+          <div class="body">已经听了，很好地补充了心力。飞哥分享的自己踩过的坑，也很有启发。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">陈慧_Vera<span class="time">09:07</span></div>
+          <div class="body">[强][强]感谢分享。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">刘辉<span class="time">10:55</span></div>
+          <div class="body">[强][强]感谢分享。</div>
+        </div>
+<div class="commentary">回放还没听完，群里的「感谢分享」已经先发完了——出海圈的礼仪是肌肉记忆。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💸</span>
+          <span class="title">苹果打钱税务惊魂</span>
+<span class="meta">11:05 - 11:07</span>        </div>
+        <div class="bubble">
+          <div class="who">郑小强<span class="time">11:05</span></div>
+          <div class="body">请教一下，苹果 App Store 打到银行卡的钱会涉及税务问题么？一直没关注过，担心哪天被请去喝茶。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郝永刚<span class="time">11:06</span></div>
+          <div class="body">不会吧，苹果先扣税的。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">郑小强<span class="time">11:07</span></div>
+          <div class="body">哦。</div>
+        </div>
+<div class="commentary">「哦」字背后是松了半口气还有半口气没敢松——独立开发者的财务知识全靠群里随机抽查。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🔍</span>
+          <span class="title">YouTube 来了流量却找不到爹</span>
+<span class="meta">11:19 - 11:27</span>        </div>
+        <div class="bubble">
+          <div class="who">刘辉<span class="time">11:19</span></div>
+          <div class="body">突然发现从 YouTube 来了一点点流量，没投广告也没找网红，想知道是从哪个页面来的，有办法吗？</div>
+        </div>
+        <div class="bubble">
+          <div class="who">老荀<span class="time">11:20</span></div>
+          <div class="body">搜下外链？</div>
+        </div>
+        <div class="bubble">
+          <div class="who">刘辉<span class="time">11:22</span></div>
+          <div class="body">Vercel 日志里只带了域名，没有具体 URL；Ahrefs 抓取又没这么快。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">又在放鞭炮<span class="time">11:25</span></div>
+          <div class="body">site:youtube.com 「x.ai」这样搜得到吗，可能评论区或者简介里有人提到。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">刘辉<span class="time">11:27</span></div>
+          <div class="body">也有可能，我就是想看看哪些评论区可以留言，这样看起来很划算。</div>
+        </div>
+<div class="commentary">免费来的流量找到了源头就成了下一个流量入口——白嫖的尽头是反向白嫖。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💔</span>
+          <span class="title">Copilot 时代闭幕</span>
+<span class="meta">17:04 - 17:08</span>        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:04</span></div>
+          <div class="body">大家现在都是用的什么用量套餐？我之前一直用 GitHub 的 copilot，从 6 月开始也要废了，准备换。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Yark<span class="time">17:05</span></div>
+          <div class="body">现在 gpt 5.5 体验还不错。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:06</span></div>
+          <div class="body">codex 的话，plus 够用吗？还是必须上 pro 了。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Yark<span class="time">17:07</span></div>
+          <div class="body">100 刀的版本吧。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:08</span></div>
+          <div class="body">copilot 的好日子结束了。本来每个月 40 刀相当于 2000 刀的用量。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Danter<span class="time">17:08</span></div>
+          <div class="body">看使用频率，低频是够的。</div>
+        </div>
+<div class="commentary">用 40 块薅 2000 块的羊毛，薅了一年半你以为这是常态——其实那叫融资烧钱补贴你。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">😰</span>
+          <span class="title">PayPal 开 GPT 会员封号惊魂</span>
+<span class="meta">17:13 - 17:22</span>        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:13</span></div>
+          <div class="body">GPT 用 PayPal 开会员不会被封号吧？</div>
+        </div>
+        <div class="bubble">
+          <div class="who">毛海山Sam<span class="time">17:14</span></div>
+          <div class="body">GPT 最多只掉会员不封号。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Zc、桀<span class="time">17:15</span></div>
+          <div class="body">用 PayPal 开会员会有风险的咩[发呆]</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:18</span></div>
+          <div class="body">主要 PayPal 是中国账号。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">布衣<span class="time">17:20</span></div>
+          <div class="body">GPT 只要支付没啥问题，很少封号。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">睡觉想飞 🥒<span class="time">17:21</span></div>
+          <div class="body">只要不是去白嫖免费一个月、团队账号那种活动，很少封的。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Sinan<span class="time">17:22</span></div>
+          <div class="body">okk。</div>
+        </div>
+<div class="commentary">群友给的安全感配方：不白嫖 + 不蹭团队 + 接受可能掉会员，三管齐下心脏才不会被封。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🔨</span>
+          <span class="title">模板与骨架的灵魂拷问</span>
+<span class="meta">23:22 - 23:44</span>        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">23:22</span></div>
+          <div class="body">在 Claude 配合下，我给大家解读了一下这次 3 月底 4 月初的谷歌核心算法更新。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">laiqun🇨🇳<span class="time">23:39</span></div>
+          <div class="body">Google 不再区分是 AI 写还是人按模板写，只要结构高度雷同、只是关键词替换，一律按 scaled content abuse 处理。那 ShipAny、mksaas 是不是也算模板？[捂脸]</div>
+        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">23:41</span></div>
+          <div class="body">你没理解内容模板和框架的区别。用 ShipAny 是用他的骨架、核心功能，皮可以任意修改，这种不属于模板。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Erwa<span class="time">23:42</span></div>
+          <div class="body">很多人做小游戏站都这样吧——做好一套模板，新游戏来了快速替换内容，半小时就能改好上线，这种算模板吗？</div>
+        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">23:43</span></div>
+          <div class="body">有些算的，有些不算。你每一篇博文的脉络结构如果相同，就算。</div>
+        </div>
+        <div class="bubble">
+          <div class="who">laiqun🇨🇳<span class="time">23:44</span></div>
+          <div class="body">嗯嗯，谢谢飞哥解惑。</div>
+        </div>
+<div class="commentary">判定模板的尺子从来不是「用没用脚手架」，是「换皮换得有没有灵魂」——抄结构是滥用，抄骨架是站队。</div>      </div>
+
+      <div class="section-title"><span class="emoji">💪</span><span>群体复读</span></div>
+      <div class="echo">
+        <div class="quote">「感谢分享」</div>
+        <div class="voicers">陈慧_Vera · 刘辉 · CC · 3 人接力</div>
+      </div>
+
+      <div class="section-title"><span class="emoji">☁️</span><span>关键词</span></div>
+      <div class="cloud">
+        <span class="chip hot">大家<small>·6</small></span>
+        <span class="chip hot">可以<small>·6</small></span>
+        <span class="chip hot">模板<small>·6</small></span>
+        <span class="chip hot">问题<small>·4</small></span>
+        <span class="chip hot">感谢<small>·4</small></span>
+        <span class="chip hot">没有<small>·4</small></span>
+        <span class="chip hot">GPT<small>·4</small></span>
+        <span class="chip hot">现在<small>·3</small></span>
+        <span class="chip hot">一下<small>·3</small></span>
+        <span class="chip hot">一个<small>·3</small></span>
+        <span class="chip hot">这样<small>·3</small></span>
+        <span class="chip hot">看看<small>·3</small></span>
+        <span class="chip hot">之前<small>·3</small></span>
+        <span class="chip hot">会员<small>·3</small></span>
+        <span class="chip hot">封号<small>·3</small></span>
+        <span class="chip hot">只要<small>·3</small></span>
+        <span class="chip hot">这种<small>·3</small></span>
+        <span class="chip ">直播<small>·2</small></span>
+        <span class="chip ">一些<small>·2</small></span>
+        <span class="chip ">飞哥<small>·2</small></span>
+        <span class="chip ">请教<small>·2</small></span>
+        <span class="chip ">苹果<small>·2</small></span>
+        <span class="chip ">一直<small>·2</small></span>
+        <span class="chip ">不会<small>·2</small></span>
+        <span class="chip ">Youtube<small>·2</small></span>
+      </div>
+
+      <div class="section-title"><span class="emoji">📊</span><span>今日总结</span></div>
+      <div class="awards">
+        <div class="row">
+          <div class="label">最卷的人</div>
+          <div class="winner">哥飞</div>
+          <div class="reason">23:44 还在群里手把手教你区分骨架和模板，熬夜冠军实至名归。</div>
+        </div>
+        <div class="row">
+          <div class="label">最清醒的人</div>
+          <div class="winner">毛海山Sam</div>
+          <div class="reason">一句「最多只掉会员不封号」精准缓解 Sinan 的 PayPal 焦虑。</div>
+        </div>
+        <div class="row">
+          <div class="label">最扎心的人</div>
+          <div class="winner">Sinan</div>
+          <div class="reason">「本来每个月 40 刀相当于 2000 刀的用量」——独立开发者的羊毛挽歌。</div>
+        </div>
+        <div class="row">
+          <div class="label">最佳黑马</div>
+          <div class="winner">laiqun🇨🇳</div>
+          <div class="reason">一个捂脸表情把 ShipAny、mksaas 集体送上灵魂拷问的审判席。</div>
+        </div>
+        <div class="row">
+          <div class="label">今日金句</div>
+          <div class="winner">哥飞</div>
+          <div class="reason">你每一篇博文的脉络结构如果相同，就算。</div>
+        </div>
+      </div>
+
+  </div>
+  <div class="group " id="g-哥飞的朋友们11">
+    <div class="group-head">
+      <div class="name">哥飞的朋友们⑪</div>
+      <div class="meta">
+          <span>98 条消息</span> ·
+          <span>23 人</span> ·
+          <span>00:43 至 23:22</span>
+      </div>
+    </div>
+
+
+      <div class="section-title"><span class="emoji">🔥</span><span>快捷事件</span><span class="sub">今天群里说了啥</span></div>
+      <div class="quotes">
+        <div class="row">
+          <div class="who">::</div>
+          <div class="quote">「能被 stripe 风控拦住的, 肯定都是有问题的吧」</div>
+        </div>
+        <div class="row">
+          <div class="who">👸🏻小淑女✨</div>
+          <div class="quote">「封了就没了啊, 20 美金算啥, 现在都每个月几百美金的订阅」</div>
+        </div>
+        <div class="row">
+          <div class="who">::</div>
+          <div class="quote">「我这里一半用户都是想涉黄的, 正经用户没几个」</div>
+        </div>
+        <div class="row">
+          <div class="who">唐唐</div>
+          <div class="quote">「ip 不好的话, 上号就封了, 基本没有解封可能」</div>
+        </div>
+        <div class="row">
+          <div class="who">燚</div>
+          <div class="quote">「让 deepseek 教你写英文申诉邮件, 第二天就能恢复」</div>
+        </div>
+        <div class="row">
+          <div class="who">DK</div>
+          <div class="quote">「我想要免费的, 或者极致低价的」</div>
+        </div>
+        <div class="row">
+          <div class="who">秋风扫落枼</div>
+          <div class="quote">「发件容易被丢垃圾桶」</div>
+        </div>
+        <div class="row">
+          <div class="who">TONG</div>
+          <div class="quote">「自建需要大量配置且容易被列入黑名单」</div>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🏆</span><span>龙王榜</span><span class="sub">话痨 TOP 3</span></div>
+      <div class="ranking">
+        <div class="seat gold">
+          <div class="medal">🥇</div>
+          <div class="name">xcrossed</div>
+          <div class="cnt">23 条</div>
+<div class="common">这么 / to / in / this</div>        </div>
+        <div class="seat silver">
+          <div class="medal">🥈</div>
+          <div class="name">DK</div>
+          <div class="cnt">18 条</div>
+<div class="common">邮件 / 自己 / 提供 / 域名</div>        </div>
+        <div class="seat bronze">
+          <div class="medal">🥉</div>
+          <div class="name">Grey</div>
+          <div class="cnt">12 条</div>
+<div class="common">哥飞 / 旺柴 / chat / 下线</div>        </div>
+      </div>
+
+      <div class="section-title"><span class="emoji">🔗</span><span>资源分享</span></div>
+      <div class="resources">
+        <div class="res">
+          <div class="meta">哥飞 · 08:17 · <em>直播回放</em></div>
+          <div class="title">丁律师 × 彪哥 × 树哥 × 哥飞 出海闲聊直播</div>
+<div class="desc">丁律师组的局, 四个人在直播里回答大家关心的出海问题, 已出回放</div>          <ul class="points">
+<li>合规视角</li><li>出海老人现身说法</li><li>回答常见好奇心问题</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">Grey · 17:53 · <em>工具</em></div>
+          <div class="title">Cloudflare 5 刀邮箱套餐 (域名邮箱发件)</div>
+<div class="desc">Cloudflare 邮件路由功能升级, 5 刀套餐已经开放发件, 不再仅限收件</div><div class="url">https://new.web.cafe/topic/78j51kfmel</div>          <ul class="points">
+<li>每月 5 美金</li><li>支持发件</li><li>适合轻量域名邮箱场景</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">DK · 17:42 · <em>服务</em></div>
+          <div class="title">DK 自研域名邮件 API 服务</div>
+<div class="desc">DK 自己写给 agent 用的邮件系统, 支持程序接入 API, 一年 100 块起 10 个站</div>          <ul class="points">
+<li>一年 100 元 10 站</li><li>增站每个 10 元</li><li>API 化收发</li><li>自带界面</li>          </ul>
+        </div>
+        <div class="res">
+          <div class="meta">哥飞 · 23:22 · <em>解读</em></div>
+          <div class="title">Claude 协同解读 · 谷歌 3 月底 4 月初核心算法更新</div>
+<div class="desc">哥飞用 Claude 把这次谷歌核心算法更新拆开讲了一遍, 适合做 SEO 站群的复盘</div>          <ul class="points">
+<li>核心算法更新</li><li>Claude 辅助分析</li><li>SEO 站长必看</li>          </ul>
+        </div>
+      </div>
+
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💳</span>
+          <span class="title">凌晨 Stripe 哲学问答: 6 小时后被一个字怼回</span>
+<span class="meta">00:43 - 06:39</span>        </div>
+        <div class="bubble">
+          <div class="who">::<span class="time">00:43</span></div>
+          <div class="body">能被 stripe 风控拦住的, 是不是肯定都是有问题的</div>
+        </div>
+        <div class="bubble">
+          <div class="who">黄八宝<span class="time">06:39</span></div>
+          <div class="body">是</div>
+        </div>
+<div class="commentary">深夜灵魂拷问 + 早高峰一字回复, 出海圈的极简对话美学被这俩人拿捏了。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🔞</span>
+          <span class="title">GPT Image 2 上线第一天: 一半用户先来试 NSFW</span>
+<span class="meta">12:47 - 13:03</span>        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">12:47</span></div>
+          <div class="body">GPT Image 2 生图能力真的很强, 大家可以找找使用场景了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">煜烽<span class="time">12:51</span></div>
+          <div class="body">好莱坞大片!</div>
+        </div>
+        <div class="bubble">
+          <div class="who">::<span class="time">12:58</span></div>
+          <div class="body">我这里用 GPT Image 2 一半都是想涉黄的, 还好都挡住了, 正经用户没几个</div>
+        </div>
+        <div class="bubble">
+          <div class="who">xcrossed<span class="time">13:00</span></div>
+          <div class="body">这么夸张</div>
+        </div>
+        <div class="bubble">
+          <div class="who">::<span class="time">13:01</span></div>
+          <div class="body">是的, 很多第一时间都是试一试你这个能不能生成 nsfw 的图片</div>
+        </div>
+        <div class="bubble">
+          <div class="who">青竹<span class="time">13:03</span></div>
+          <div class="body">是模型自己挡住了还是接了 nsfw filter</div>
+        </div>
+<div class="commentary">工具刚出来, 用户的第一反应永远比模型诚实——人性永远抢在产品经理之前到达赛博色情现场。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">💸</span>
+          <span class="title">20 美金的 Gemini CLI 葬礼: xcrossed 的封号哀嚎之夜</span>
+<span class="meta">14:34 - 16:16</span>        </div>
+        <div class="bubble">
+          <div class="who">xcrossed<span class="time">14:34</span></div>
+          <div class="body">gemini cli 被封了, 我刚买的 google ai pro 会员, 这么狠么, 我的 20 美金</div>
+        </div>
+        <div class="bubble">
+          <div class="who">唐唐<span class="time">14:35</span></div>
+          <div class="body">ip 不好的话, 上号就封了, 而且基本上没有解封可能</div>
+        </div>
+        <div class="bubble">
+          <div class="who">👸🏻小淑女✨<span class="time">14:40</span></div>
+          <div class="body">封了就没了啊, 20 美金算啥, 现在都每个月几百美金的订阅</div>
+        </div>
+        <div class="bubble">
+          <div class="who">燚<span class="time">15:53</span></div>
+          <div class="body">让 deepseek 教你写英文申诉邮件, 第二天就能恢复</div>
+        </div>
+        <div class="bubble">
+          <div class="who">智昊｜回家吃饭<span class="time">16:11</span></div>
+          <div class="body">你贴给 gemini 问他怎么办</div>
+        </div>
+        <div class="bubble">
+          <div class="who">xcrossed<span class="time">16:16</span></div>
+          <div class="body">gemini 乱答一通</div>
+        </div>
+<div class="commentary">让被封的 Gemini 自己教你怎么申诉, 完美闭环——这就是赛博莫比乌斯环。20 美金不是学费, 是给 AI 时代交的入场税。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">📧</span>
+          <span class="title">域名邮箱内卷之夜: DK 还没卖完就被 Cloudflare 5 刀截胡</span>
+<span class="meta">17:39 - 18:01</span>        </div>
+        <div class="bubble">
+          <div class="who">独孤风<span class="time">17:39</span></div>
+          <div class="body">个人简介外链每次注册都要一个邮箱, 每个站都要准备一个吗, 有没有好注册的邮箱推荐</div>
+        </div>
+        <div class="bubble">
+          <div class="who">DK<span class="time">17:42</span></div>
+          <div class="body">我有解决方案, 一年 100 块起十个站, 后面每加一个 10 块, 一个账号收所有邮件</div>
+        </div>
+        <div class="bubble">
+          <div class="who">xcrossed<span class="time">17:43</span></div>
+          <div class="body">cloudflare mail routine 服务</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Grey<span class="time">17:51</span></div>
+          <div class="body">Cloudflare 发件可以了, 最近几周才出现的功能, 5 刀套餐就行</div>
+        </div>
+        <div class="bubble">
+          <div class="who">DK<span class="time">17:54</span></div>
+          <div class="body">我想要免费的, 或者极致低价的</div>
+        </div>
+        <div class="bubble">
+          <div class="who">秋风扫落枼<span class="time">17:55</span></div>
+          <div class="body">发件容易被丢垃圾桶, 正确方案是亚马逊 SES 的发件</div>
+        </div>
+        <div class="bubble">
+          <div class="who">TONG<span class="time">17:55</span></div>
+          <div class="body">自建需要大量配置且容易被列入黑名单</div>
+        </div>
+        <div class="bubble">
+          <div class="who">DK<span class="time">18:01</span></div>
+          <div class="body">Ip 的干净程度需要自己管理, 不要大量发送垃圾邮件就没问题</div>
+        </div>
+<div class="commentary">群里实时上演了一场 SaaS 竞品分析: DK 上来推销自家 API, 8 分钟后就被 Cloudflare 5 刀方案 + 亚马逊 SES 围剿——出海圈的速度, 卖货之前先做完市场调研。</div>      </div>
+      <div class="story">
+        <div class="story-head">
+          <span class="emoji">🧠</span>
+          <span class="title">哥飞夜话: 早上发直播回放, 深夜还在解读谷歌算法</span>
+<span class="meta">08:17 - 23:22</span>        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">08:17</span></div>
+          <div class="body">前几天丁律师邀请彪哥、树哥和我直播聊聊天, 现在回放出来了, 感兴趣的可以听</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Grey<span class="time">10:20</span></div>
+          <div class="body">哥飞 chat 怎么下线了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">10:20</span></div>
+          <div class="body">是你的登录没了, 重新登录下</div>
+        </div>
+        <div class="bubble">
+          <div class="who">Grey<span class="time">10:21</span></div>
+          <div class="body">ok 清下浏览器缓存可以了</div>
+        </div>
+        <div class="bubble">
+          <div class="who">哥飞<span class="time">23:22</span></div>
+          <div class="body">在 Claude 的配合下, 我给大家解读了一下这次 3 月底 4 月初的谷歌核心算法更新</div>
+        </div>
+<div class="commentary">早上 8 点发回放, 23 点还在发算法解读, 群主营业 15 小时不打烊——SEO 圈的卷王不是 xcrossed, 是哥飞本飞。</div>      </div>
+
+      <div class="section-title"><span class="emoji">💪</span><span>群体复读</span></div>
+      <div class="echo">
+        <div class="quote">「「我的 20 美金…」」</div>
+        <div class="voicers">xcrossed · 👸🏻小淑女✨ · 燚 · 4 人接力</div>
+      </div>
+
+      <div class="section-title"><span class="emoji">☁️</span><span>关键词</span></div>
+      <div class="cloud">
+        <span class="chip hot">邮箱<small>·7</small></span>
+        <span class="chip hot">可以<small>·6</small></span>
+        <span class="chip hot">邮件<small>·6</small></span>
+        <span class="chip hot">自己<small>·5</small></span>
+        <span class="chip hot">gemini<small>·5</small></span>
+        <span class="chip hot">申诉<small>·5</small></span>
+        <span class="chip hot">一个<small>·5</small></span>
+        <span class="chip hot">问题<small>·4</small></span>
+        <span class="chip hot">大家<small>·4</small></span>
+        <span class="chip hot">现在<small>·4</small></span>
+        <span class="chip ">哥飞<small>·3</small></span>
+        <span class="chip ">怎么<small>·3</small></span>
+        <span class="chip ">登录<small>·3</small></span>
+        <span class="chip ">这个<small>·3</small></span>
+        <span class="chip ">美金<small>·3</small></span>
+        <span class="chip ">每个<small>·3</small></span>
+        <span class="chip ">注册<small>·3</small></span>
+        <span class="chip ">域名<small>·3</small></span>
+        <span class="chip ">或者<small>·3</small></span>
+        <span class="chip ">大量<small>·3</small></span>
+        <span class="chip ">直播<small>·2</small></span>
+        <span class="chip ">GPT<small>·2</small></span>
+        <span class="chip ">Image<small>·2</small></span>
+        <span class="chip ">这里<small>·2</small></span>
+        <span class="chip ">挡住<small>·2</small></span>
+      </div>
+
+      <div class="section-title"><span class="emoji">📊</span><span>今日总结</span></div>
+      <div class="awards">
+        <div class="row">
+          <div class="label">最卷的人</div>
+          <div class="winner">DK</div>
+          <div class="reason">半夜在群里推销自研域名邮件 SaaS, 一年 100 块 10 站起卖, 还没等用户问就把 API 报价表甩出来了</div>
+        </div>
+        <div class="row">
+          <div class="label">最清醒的人</div>
+          <div class="winner">👸🏻小淑女✨</div>
+          <div class="reason">一句「20 美金算啥, 现在都每个月几百美金的订阅」, 直接给所有 AI 创业者的成本焦虑做了心理按摩</div>
+        </div>
+        <div class="row">
+          <div class="label">最扎心的人</div>
+          <div class="winner">唐唐</div>
+          <div class="reason">对 xcrossed 的 Gemini 封号说出「上号就封了, 基本没有解封可能」, 5 秒就把人家的希望按死了</div>
+        </div>
+        <div class="row">
+          <div class="label">最佳黑马</div>
+          <div class="winner">燚</div>
+          <div class="reason">申诉学大师上线: 「让 deepseek 教你写英文申诉邮件, 第二天就能恢复」, 用一个 AI 去救另一个 AI</div>
+        </div>
+        <div class="row">
+          <div class="label">今日金句</div>
+          <div class="winner">::</div>
+          <div class="reason">「我这里用 GPT Image 2 一半都是想涉黄的, 还好都挡住了, 正经用户没几个」</div>
+        </div>
+      </div>
+
+  </div>
+
+</div>
+
+<footer>
+  生成于 2026-05-02 20:56 · 数据源 wx-cli + Claude<br>
+  <a href="../">← 回到日历</a> ·
+  <a href="https://github.com/siuserxiaowei/wechat-obsidian-pipeline">源码</a><br>
+  by Claudian × Obsidian
+</footer>
+
+<script>
+  // 高亮当前 nav
+  const sections = document.querySelectorAll('.group');
+  const navLinks = document.querySelectorAll('.nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${id}`));
+      }
+    });
+  }, { rootMargin: '-30% 0px -65% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
